@@ -10,7 +10,7 @@
 #### WeChat
 欢迎添加我的微信：xurui0801
 
-![](https://github.com/pengxurui/LeetCode-Kotlin/raw/master/images/个人微信.jpeg)
+![](https://github.com/pengxurui/LeetCode-Kotlin/blob/main/images/%E4%B8%AA%E4%BA%BA%E5%BE%AE%E4%BF%A1.jpeg)
 
 #### Blog
 
