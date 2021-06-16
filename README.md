@@ -10,7 +10,7 @@
 #### WeChat
 欢迎添加我的微信：xurui0801
 
-![](https://github.com/pengxurui/Android-NoteBook/raw/master/images/个人微信.jpeg)
+![](https://github.com/pengxurui/LeetCode-Kotlin/raw/master/images/个人微信.jpeg)
 
 #### Blog
 
@@ -22,7 +22,7 @@
 - 知乎：https://www.zhihu.com/people/di-san-ci-ai-qing
 
 #### License
-Copyright [2020] [pengxurui]
+Copyright [2021] [Peng XuRui]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
