@@ -46,7 +46,7 @@
 
 **4、关注我的 [掘金](https://juejin.cn/user/1063982987230392)、[知乎](https://www.zhihu.com/people/pengxurui) 和 [《AndroidFamily》](https://github.com/pengxurui/AndroidFamily) 专栏：** 掘金上有我历史发布过的所有文章，AndroidFamily 专栏是我参考杜威十进制模型搭建的 Android 成长学习路线，你可以参考我的模型定制专属的知识体系。
 
-**5、查看题解：** 打开 [/leetCode 文件夹](https://github.com/pengxurui/LeetCode-Kotlin/tree/main/leetcode) 查看 Kotlin 版本的 LeetCode 题解，根据题目编号搜索（题解搬运需要耗费大量时间，小彭会优先把刷过的高频题先整理过来）。
+**5、查看题解：** 打开 [leetCode 文件夹](https://github.com/pengxurui/LeetCode-Kotlin/tree/main/leetcode) 查看 Kotlin 版本的 LeetCode 题解，根据题目编号搜索（题解搬运需要耗费大量时间，小彭会优先把刷过的高频题先整理过来）。
 
 **6、学习算法思维：** 阅读数据结构与算法专栏文章，提升对数据结构和算法的认知，掌握解题的基本思考框架。不管题目怎么抽象，怎么变换，做到以不变应万变。
 
