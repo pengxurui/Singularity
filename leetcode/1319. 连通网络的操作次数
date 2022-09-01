@@ -1,0 +1,95 @@
+## [1319. 连通网络的操作次数](https://leetcode.cn/problems/number-of-operations-to-make-network-connected/)
+
+## 题目描述
+
+用以太网线缆将 n 台计算机连接成一个网络，计算机的编号从 0 到 n-1。线缆用 connections 表示，其中 connections[i] = [a, b] 连接了计算机 a 和 b。
+
+网络中的任何一台计算机都可以通过网络直接或者间接访问同一个网络中其他任意一台计算机。
+
+给你这个计算机网络的初始布线 connections，你可以拔开任意两台直连计算机之间的线缆，并用它连接一对未直连的计算机。请你计算并返回使所有计算机都连通所需的最少操作次数。如果不可能，则返回 -1 。 
+
+来源：力扣（LeetCode）
+链接：https://leetcode.cn/problems/number-of-operations-to-make-network-connected
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+## 题目考点
+
+并查集
+
+## 题解
+ 
+```
+class Solution {
+    fun makeConnected(n: Int, connections: Array<IntArray>): Int {
+        // 问题等价于计算冗余连接数与连通分量，需要：冗余连接数 > 连通分量 - 1，才能让整个网络连通
+        val unionFind = UnionFind(n)
+        var redundantLink = 0
+        for (connection in connections) {
+            if (!unionFind.tryUnion(connection[0], connection[1])) {
+                redundantLink++
+            }
+        }
+        if (redundantLink >= unionFind.count - 1) {
+            // 需要连通分量 - 1 条网线
+            return unionFind.count - 1
+        } else {
+            // 无法连通
+            return -1
+        }
+    }
+
+    private class UnionFind(n: Int) {
+        // 父节点
+        private val parent = IntArray(n) { it }
+
+        // 节点的高度
+        private val rank = IntArray(n) { 1 }
+
+        // 连通分量
+        var count = n
+            private set
+
+        // 查询（路径压缩）
+        fun find(x: Int): Int {
+            var key = x
+            while (key != parent[key]) {
+                parent[key] = parent[parent[key]]
+                key = parent[key]
+            }
+            return key
+        }
+
+        // 合并（按秩合并）
+        fun tryUnion(key1: Int, key2: Int): Boolean {
+            val root1 = find(key1)
+            val root2 = find(key2)
+
+            if (root1 == root2) {
+                return false
+            }
+            if (rank[root1] > rank[root2]) {
+                // root1 的高度更大，让 root2 成为子树，树的高度不变
+                parent[root2] = root1
+            } else if (rank[root2] > rank[root1]) {
+                // root2 的高度更大，让 root1 成为子树，树的高度不变
+                parent[root1] = root2
+            } else {
+                // 高度相同，谁当子树都一样
+                parent[root1] = root2
+                // root2 的高度加一
+                rank[root2]++
+                //  或
+                //  parent[root2] = root1
+                //  rank[root1] ++
+            }
+            count--
+            return true
+        }
+    }
+}
+```
+
+**复杂度分析：**
+
+- 时间复杂度：O(n\*a(n))
+- 空间复杂度：O(n) 使用固定长度的数组。
