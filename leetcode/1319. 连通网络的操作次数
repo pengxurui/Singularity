@@ -8,10 +8,6 @@
 
 给你这个计算机网络的初始布线 connections，你可以拔开任意两台直连计算机之间的线缆，并用它连接一对未直连的计算机。请你计算并返回使所有计算机都连通所需的最少操作次数。如果不可能，则返回 -1 。 
 
-来源：力扣（LeetCode）
-链接：https://leetcode.cn/problems/number-of-operations-to-make-network-connected
-著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
-
 ## 题目考点
 
 并查集
