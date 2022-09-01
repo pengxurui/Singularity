@@ -13,7 +13,7 @@
 并查集
 
 ## 题解
-
+ 
 ```
 class Solution {
     fun findRedundantConnection(edges: Array<IntArray>): IntArray {
