@@ -1,0 +1,69 @@
+## [560. 和为 K 的子数组](https://leetcode.cn/problems/subarray-sum-equals-k)
+
+## 题目描述
+
+给你一个整数数组 nums 和一个整数 k ，请你统计并返回 该数组中和为 k 的连续子数组的个数 。
+
+## 题目考点
+
+前缀和
+
+## 题解一（前缀和）
+ 
+```
+class Solution {
+    fun subarraySum(nums: IntArray, k: Int): Int {
+        // 1、预处理：构造前缀和数组
+        var preSum = IntArray(nums.size + 1) { 0 }
+        for (index in nums.indices) {
+            preSum[index + 1] = preSum[index] + nums[index]
+        }
+
+        // 2、枚举所有子数组，使用「前缀和 + 差分」技巧计算区间和
+        var result = 0
+        for (i in nums.indices) {
+            for (j in i until nums.size) {
+                val sum_i_j = preSum[j + 1] - preSum[i]
+                if (k == sum_i_j) {
+                    result++
+                }
+            }
+        }
+        return result
+    }
+}
+```
+
+## 题解二（前缀和 + 散列表）
+
+```
+class Solution {
+    fun subarraySum(nums: IntArray, k: Int): Int {
+        var preSum = 0
+        var result = 0
+
+        // 维护哈希表：Key 为前缀和，Value 为前缀和为 Key 的数组（起点从 0 开始的数组）个数
+        val map = HashMap<Int, Int>()
+        map[0] = 1
+
+        for (index in nums.indices) {
+            preSum += nums[index]
+
+            // 获得前缀和为 preSum - k 的个数
+            val offset = preSum - k
+            if (map.contains(offset)) {
+                result += map[offset]!!
+            }
+
+            map[preSum] = map.getOrDefault(preSum, 0) + 1
+        }
+
+        return result
+    }
+}
+```
+
+**复杂度分析：**
+
+- 时间复杂度：O(n)
+- 空间复杂度：O(n) 使用固定长度的数组。
