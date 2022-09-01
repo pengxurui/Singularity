@@ -112,7 +112,7 @@
 
 ### 5、思维逻辑题
 
-- [5.1 25 匹马 5 条赛道，最快需要几轮求出前 3 名](https://juejin.cn/post/6903861591188783112)
+- [5.1 25 匹马 5 条赛道，最快需要几轮求出前 3 名](https://mp.weixin.qq.com/s/c5SEJYQZeFIn8qwermnW1A)
 
 - [5.2 一共有多少顶黑帽？](https://juejin.cn/post/6903524335193948167)
 
