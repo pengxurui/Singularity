@@ -135,7 +135,6 @@
 - [ModularEventBus](https://github.com/pengxurui/ModularEventBus) 一个 Android 事件总线框架，为你解决事件总线 “滥用” 问题；
 - [EasyTrack](https://github.com/pengxurui/EasyTrack) 基于西瓜视频前端视图树埋点方案实现的埋点方案；
 - [EasyPrivacy](https://github.com/pengxurui/EasyPrivacy) 一个帮助开发者快速解决整改问题的工具；
-- [LeetCode-Kotlin](https://github.com/pengxurui/LeetCode-Kotlin) LeetCode 高频题解 - Kotlin 版本。
 
 更多内容，请 [点击](https://juejin.cn/user/1063982987230392)
 
