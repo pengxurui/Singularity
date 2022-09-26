@@ -1,0 +1,66 @@
+## [面试题 02.07. 链表相交](https://leetcode.cn/problems/intersection-of-two-linked-lists-lcci/)
+
+## 题目描述
+
+给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null 。
+
+## 题目考点
+
+链表
+
+**思路 1：** 用散列表记录第一个链表中的所有节点，再检查第二个链表中的节点是否存在先散列表中
+
+**思路 2：** 分别在 2 个链表上设置游标指针，当游标移动到末尾后，将游标重置转接到另一个链表表头上。如果链表相交，则两个游标在移动相同距离后会重合。
+
+## 题解一（哈希表）
+ 
+```
+class Solution {
+    fun getIntersectionNode(headA: ListNode?, headB: ListNode?): ListNode? {
+        val set = HashSet<ListNode>()
+        var pA = headA
+        var pB = headB
+        while (null != pA) {
+            set.add(pA)
+            pA = pA.next
+        }
+        while (null != pB) {
+            if (set.contains(pB)) {
+                return pB
+            }
+            pB = pB.next
+        }
+        return null
+    }
+}
+```
+
+**复杂度分析：**
+
+- 时间复杂度：O(n+m)
+- 空间复杂度：O(n) 
+
+
+## 题解二（双指针）
+ 
+```
+class Solution {
+    fun getIntersectionNode(headA: ListNode?, headB: ListNode?): ListNode? {
+        if (null == headA || null == headB) {
+            return null
+        }
+        var pA = headA
+        var pB = headB
+        while (pA != pB) {
+            pA = if (null == pA) headB else pA.next
+            pB = if (null == pB) headA else pB.next
+        }
+        return pA
+    }
+}
+```
+
+**复杂度分析：**
+
+- 时间复杂度：O(n+m)
+- 空间复杂度：O(1) 
