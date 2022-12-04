@@ -1,4 +1,5 @@
 ## [509. 斐波那契数](https://leetcode.cn/problems/fibonacci-number/)
+## [剑指 Offer 10- I. 斐波那契数列](https://leetcode.cn/problems/fei-bo-na-qi-shu-lie-lcof/description/?favorite=xb9nqhhg)
 
 ## 题目描述
 
