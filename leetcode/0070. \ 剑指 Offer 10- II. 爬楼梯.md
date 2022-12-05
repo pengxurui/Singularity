@@ -1,4 +1,5 @@
 ## [70. 爬楼梯](https://leetcode.cn/problems/climbing-stairs/)
+## [剑指 Offer 10- II. 青蛙跳台阶问题](https://leetcode.cn/problems/qing-wa-tiao-tai-jie-wen-ti-lcof)
 
 ## 题目描述
 
