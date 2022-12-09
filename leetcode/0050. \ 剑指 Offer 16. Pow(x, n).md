@@ -1,4 +1,5 @@
 ## [50. Pow(x, n)](https://leetcode.cn/problems/powx-n)
+## [剑指 Offer 16. 数值的整数次方](https://leetcode.cn/problems/shu-zhi-de-zheng-shu-ci-fang-lcof/description/?favorite=xb9nqhhg)
 
 ## 题目描述
 
