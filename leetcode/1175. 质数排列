@@ -1,0 +1,81 @@
+## [1175. 质数排列](https://leetcode.cn/problems/prime-arrangements/description/)
+
+## 题目描述
+
+请你帮忙给从 1 到 n 的数设计排列方案，使得所有的「质数」都应该被放在「质数索引」（索引从 1 开始）上；你需要返回可能的方案总数。
+
+让我们一起来回顾一下「质数」：质数一定是大于 1 的，并且不能用两个小于它的正整数的乘积来表示。
+
+由于答案可能会很大，所以请你返回答案 模 mod 10^9 + 7 之后的结果即可。
+
+## 题目考点
+
+快慢指针
+
+## 题解
+
+总的方案数即为「所有质数都放在质数索引上的方案数」×\times×「所有合数都放在合数索引上的方案数」。
+求「所有质数都放在质数索引上的方案数」，即求质数个数 numPrimes\textit{numPrimes}numPrimes 的阶乘。
+「所有合数都放在合数索引上的方案数」同理。
+
+```
+class Solution {
+
+    private val MOD = 1000000007
+
+    fun numPrimeArrangements(n: Int): Int {
+        val primeCount = primeCount(n)
+        return (factorial(primeCount) * factorial(n - primeCount) % MOD).toInt()
+    }
+
+    // 计算从 1 到 n 的质数个数（埃式筛）
+    private fun primeCount(n: Int): Int {
+        val isPrime = BooleanArray(n + 1) { true }
+        var count = 0
+        for (index in 1..n) {
+            if (isPrime[index] && isPrime(index)) {
+                count ++
+                if (index.toLong() * index > n) {
+                    continue
+                }
+                var mulIndex = index * index
+                while (mulIndex < n) {
+                    isPrime[mulIndex] = false
+                    mulIndex += index
+                }
+            }
+        }
+        return count
+    }
+
+    // 是否为质数
+    private fun isPrime(n: Int): Boolean {
+        if (n <= 1) {
+            return false
+        }
+        var index = 2
+        while (index * index <= n) {
+            if (n % index == 0) {
+                return false
+            }
+            index++
+        }
+        return true
+    }
+
+    // 阶乘
+    private fun factorial(n: Int): Long {
+        var count = 1L
+        for (index in 1..n) {
+            count *= index
+            count %= MOD
+        }
+        return count
+    }
+}
+```
+
+**复杂度分析：**
+
+- 时间复杂度：O(2^n)
+- 空间复杂度：O(1) 
