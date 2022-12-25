@@ -1,0 +1,168 @@
+## [169. 多数元素](https://leetcode.cn/problems/majority-element/description/)
+## [剑指 Offer 39. 数组中出现次数超过一半的数字](https://leetcode.cn/problems/shu-zu-zhong-chu-xian-ci-shu-chao-guo-yi-ban-de-shu-zi-lcof/description/?favorite=xb9nqhhg)
+
+## 题目描述
+
+给定一个大小为 n 的数组 nums ，返回其中的多数元素。多数元素是指在数组中出现次数 大于 ⌊ n/2 ⌋ 的元素。
+
+你可以假设数组是非空的，并且给定的数组总是存在多数元素。
+
+## 题目考点
+
+散列表、分治、投票算法
+
+## 题解一（散列表）
+ 
+```
+class Solution {
+    fun majorityElement(nums: IntArray): Int {
+        val map = HashMap<Int, Int>()
+        for (element in nums) {
+            map[element] = map.getOrDefault(element, 0) + 1
+            if (map[element]!! > nums.size / 2) return element
+        }
+        return -1
+    }
+}
+```
+
+**复杂度分析：**
+
+- 时间复杂度：O(n)
+- 空间复杂度：O(n) 
+
+## 题解二（排序）
+
+```
+class Solution {
+    fun majorityElement(nums: IntArray): Int {
+        // 排序，第 n / 2 位一定是答案
+        Arrays.sort(nums)
+        return nums[nums.size / 2]
+    }
+}
+```
+
+**复杂度分析：**
+
+- 时间复杂度：O(nlgn)
+- 空间复杂度：O(lgn) 如果使用语言自带的排序算法，则是 O(lgn)。如果使用自实现的排序算法，则是 O(1)
+
+## 题解三（随机化）
+
+```
+class Solution {
+    fun majorityElement(nums: IntArray): Int {
+        // 随机化：由于数组超过一半是答案，我们可以随机选择一个元素，然后验证是否为答案
+        val rand = Random(1)
+
+        while (true) {
+            val randomIndex = rand.nextInt(0,nums.size)
+            if (nums.count(nums[randomIndex]) > nums.size / 2) {
+                return nums[randomIndex]
+            }
+        }
+        return -1
+    }
+
+    private fun IntArray.count(target: Int): Int {
+        var count = 0
+        for (element in this) {
+            if (target == element) count++
+        }
+        return count
+    }
+}
+```
+
+**复杂度分析：**
+
+- 时间复杂度：O(n)
+- 空间复杂度：O(1) 
+
+## 题解四（分治）
+
+```
+class Solution {
+    fun majorityElement(nums: IntArray): Int {
+        // 分治：将数组拆分为两个子数组，通过子数组的众数求原数组的众数
+        return nums.getMajorityElement(0, nums.size - 1)!!.first
+    }
+
+    // [left,right]
+    // return:<num,count>
+    private fun IntArray.getMajorityElement(left: Int, right: Int): Pair<Int, Int>? {
+        if (left > right) return null
+        if (left == right) return Pair(this[left], 1)
+
+        val mid = (left + right) ushr 1
+        val leftResult = this.getMajorityElement(left, mid)
+        val rightResult = this.getMajorityElement(mid + 1, right)
+
+        if (null == leftResult) return rightResult
+        if (null == rightResult) return leftResult
+
+        return if (leftResult.first == rightResult.first) {
+            Pair(leftResult.first, leftResult.second + rightResult.second)
+        } else if (leftResult.second > rightResult.second) {
+            Pair(leftResult.first, leftResult.second + getElementCount(mid + 1, right, leftResult.first))
+        } else {
+            Pair(rightResult.first, getElementCount(left, mid, rightResult.first) + rightResult.second)
+        }
+    }
+
+    // [left,right]
+    // return：计数
+    private fun IntArray.getElementCount(left: Int, right: Int, target: Int): Int {
+        var count = 0
+        for (index in left..right) {
+            if (target == this[index]) {
+                count++
+            }
+        }
+        return count
+    }
+}
+```
+
+## 题解五（Boyer-Moore 投票算法）
+
+我们将众数视为 +1，把其他数视为 -1。
+
+首先我们维护一个候选数 <candidate-count>，然后遍历数组的每个元素，如果 count == 0，那么将它记为 candidate
+  
+对于接下来的元素，如果它等于 candidate，则 count ++，否则 count--。
+  
+最终得到的 candidate 就是答案。
+  
+```
+[7, 7, 5, 7, 5, 1 | 5, 7 | 5, 5, 7, 7 | 7, 7, 7, 7]
+```
+
+```
+class Solution {
+    fun majorityElement(nums: IntArray): Int {
+        var candidate = -1
+        var count = 0
+
+        for (element in nums) {
+            if (0 == count) {
+                candidate = element
+            }
+
+            if (candidate == element) {
+                count++
+            } else {
+                count--
+            }
+        }
+
+        return candidate
+    }
+}
+```
+
+**复杂度分析：**
+
+- 时间复杂度：O(n)
+- 空间复杂度：O(1) 
