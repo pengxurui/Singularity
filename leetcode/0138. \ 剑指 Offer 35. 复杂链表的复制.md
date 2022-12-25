@@ -1,3 +1,4 @@
+## [138. 复制带随机指针的链表](https://leetcode.cn/problems/copy-list-with-random-pointer/description/)
 ## [剑指 Offer 35. 复杂链表的复制](https://leetcode.cn/problems/fu-za-lian-biao-de-fu-zhi-lcof/description/)
 
 ## 题目描述
@@ -14,45 +15,52 @@
 class Solution {
 
     // 方法 1：我们使用散列表记录随机指针的节点的拷贝情况
-    // 方法 2：为了消除散列表，我们使用节点的 next 指针记录复制后节点。先复制链表，构建 ”原节点 1 -> 新节点 1 -> 原节点 2 -> 新节点 2 ->“ 的拼接链表，然后构建随机指针指向，最后拆分出偶数位的节点
+
+    // 记录节点的拷贝情况 <original,copied>
+    private HashMap<Node, Node> cached = new HashMap<>();
 
     public Node copyRandomList(Node head) {
         if (null == head) return null;
 
-        Node node = head;
-        while (null != node) {
-            // 下一个原节点
-            Node next = node.next;
-            // 创建拷贝节点
-            Node newNode = new Node(node.val);
-            newNode.next = next;
-            // 将拷贝节点拼接在原节点后
-            node.next = newNode;
-            node = next;
+        if (cached.containsKey(head)) return cached.get(head);
+
+        Node cur = new Node(head.val);
+        // 需要先记录缓存，否者会进入死循环
+        cached.put(head, cur);
+
+        cur.next = copyRandomList(head.next);
+        cur.random = copyRandomList(head.random);
+
+        return cur;
+    }
+}
+```
+
+```
+/**
+ * Example:
+ * var ti = Node(5)
+ * var v = ti.`val`
+ * Definition for a Node.
+ * class Node(var `val`: Int) {
+ *     var next: Node? = null
+ *     var random: Node? = null
+ * }
+ */
+
+class Solution {
+
+    private val cached = HashMam<Node, Node>()
+
+    fun copyRandomList(node: Node?): Node? {
+        if (null == node) return null
+        if (cached.containsKey(node)) return cached[node]
+        return Node(node.`val`).apply {
+            cached[node] = this
+
+            this.next = = copyRandomList (node.next)
+            this.random = copyRandomList(node.random)
         }
-
-        // 构建随机节点指针
-        node = head;
-        while (null != node) {
-            node.next.random = (null != node.random) ? node.random.next : null;
-            // 下一个原节点（两次 next）
-            node = node.next.next;
-        }
-
-        // 拆分与还原
-        Node result = head.next;
-
-        node = head;
-        while (null != node) {
-            Node copiedNode = node.next;
-            // 还原原链表
-            node.next = node.next.next;
-            // 拆分新链表
-            copiedNode.next = (null != copiedNode.next) ? copiedNode.next.next : null;
-            node = node.next;
-        }
-
-        return result;
     }
 }
 ```
