@@ -1,4 +1,5 @@
 ## [62. 不同路径](https://leetcode.cn/problems/unique-paths/description/)
+## [剑指 Offer II 098. 路径的数目](https://leetcode.cn/problems/2AoeFn/)
 
 ## 题目描述
 
