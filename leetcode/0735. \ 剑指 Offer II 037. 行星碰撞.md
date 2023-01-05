@@ -1,0 +1,58 @@
+## [735. 行星碰撞](https://leetcode.cn/problems/asteroid-collision/description/)
+## [剑指 Offer II 037. 小行星碰撞](https://leetcode.cn/problems/XagZNi/description/)
+
+## 题目描述
+
+给定一个整数数组 asteroids，表示在同一行的行星。
+
+对于数组中的每一个元素，其绝对值表示行星的大小，正负表示行星的移动方向（正表示向右移动，负表示向左移动）。每一颗行星以相同的速度移动。
+
+找出碰撞后剩下的所有行星。碰撞规则：两个行星相互碰撞，较小的行星会爆炸。如果两颗行星大小相同，则两颗行星都会爆炸。两颗移动方向相同的行星，永远不会发生碰撞。
+
+## 题目考点
+
+栈
+
+## 题解
+ 
+```
+class Solution {
+    fun asteroidCollision(asteroids: IntArray): IntArray {
+        val stack = LinkedList<Int>()
+        for (element in asteroids) {
+            if (stack.isEmpty()) {
+                // 空栈
+                stack.addLast(element)
+                continue
+            }
+            var curElement = element
+            while (!stack.isEmpty()) {
+                if (stack.getLast() * curElement > 0 || stack.getLast() < 0) {
+                    // 终止条件：1、方向相同 2、方向不同但不会发生碰撞
+                    break
+                }
+                val topElement = stack.pollLast()
+                if (topElement > -curElement) {
+                    // 碰撞结束
+                    curElement = topElement
+                    break
+                } else if (topElement == -curElement) {
+                    // 碰撞结束
+                    curElement = 1001 // 特殊值
+                    break
+                } else {
+                    // 碰撞继续
+                    // curElement = curElement
+                }
+            }
+            if (1001 != curElement) stack.addLast(curElement)
+        }
+        return stack.toIntArray()
+    }
+}
+```
+
+**复杂度分析：**
+
+- 时间复杂度：O(n)
+- 空间复杂度：O(n) 栈空间 
