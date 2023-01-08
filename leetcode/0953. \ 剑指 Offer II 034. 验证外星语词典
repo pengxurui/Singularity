@@ -1,0 +1,47 @@
+## [953. 验证外星语词典](https://leetcode.cn/problems/verifying-an-alien-dictionary/description/)
+## [剑指 Offer II 034. 外星语言是否排序](https://leetcode.cn/problems/lwyVBB/description/)
+
+## 题目描述
+
+某种外星语也使用英文小写字母，但可能顺序 order 不同。字母表的顺序（order）是一些小写字母的排列。
+
+给定一组用外星语书写的单词 words，以及其字母表的顺序 order，只有当给定的单词在这种外星语中按字典序排列时，返回 true；否则，返回 false。
+
+## 题目考点
+
+字符串
+
+## 题解
+ 
+```
+class Solution {
+    fun isAlienSorted(words: Array<String>, order: String): Boolean {
+        if (words.size <= 1) return true
+        // 字典：Letter to Index
+        val alienMap = IntArray(26)
+        for ((index, letter) in order.withIndex()) {
+            alienMap[letter - 'a'] = index
+        }
+        // 依次检查前后两个单词的字典序
+        for (wordIndex in 0..words.size - 2) {
+            val word1 = words[wordIndex]
+            val word2 = words[wordIndex + 1]
+            for (letterIndex in word1.indices) {
+                // 长度逆序
+                if (letterIndex >= word2.length) return false
+                val word1Letter = alienMap[word1[letterIndex] - 'a']
+                val word2Letter = alienMap[word2[letterIndex] - 'a']
+                // 只需要考虑靠前字母的字典序
+                if (word1Letter < word2Letter) break
+                if (word1Letter > word2Letter) return false
+            }
+        }
+        return true
+    }
+}
+```
+
+**复杂度分析：**
+
+- 时间复杂度：O(n·m) n 是单词个数，m 是单词的平均长度，每两个单词需要比较，所以时间复杂度是 O(n·m)
+- 空间复杂度：O(26) 
