@@ -99,7 +99,46 @@ class Solution {
 }
 ```
 
+空间优化：先计算 arr1 数组的最大值
+
+```
+class Solution {
+    fun relativeSortArray(arr1: IntArray, arr2: IntArray): IntArray {
+        // 计数排序
+        // 查询 arr1 中的最大值
+        var upper = 0
+        for (element in arr1) {
+            upper = Math.max(upper, element)
+        }
+        // 统计 arr1 中元素的出现频次
+        val arr1Frequency = IntArray(upper + 1) { 0 }
+        for (element in arr1) {
+            ++arr1Frequency[element]
+        }
+        var index = 0
+        // arr2 中出现的部分
+        for (element in arr2) {
+            if (arr1Frequency[element] > 0) {
+                for (count in 0 until arr1Frequency[element]) {
+                    arr1[index++] = element
+                }
+                arr1Frequency[element] = 0
+            }
+        }
+        // arr2 中未出现部分
+        for ((element, frequency) in arr1Frequency.withIndex()) {
+            if (frequency > 0) {
+                for (count in 0 until frequency) {
+                    arr1[index++] = element
+                }
+            }
+        }
+        return arr1
+    }
+}
+```
+
 **复杂度分析：**
 
 - 时间复杂度：O(n + m + upper)
-- 空间复杂度：O(1001) 
+- 空间复杂度：O(1001) -> O(upper)
