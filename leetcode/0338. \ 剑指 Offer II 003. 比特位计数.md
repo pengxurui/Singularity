@@ -1,4 +1,5 @@
 ## [338. 比特位计数](https://leetcode.cn/problems/counting-bits/)
+## [剑指 Offer II 003. 前 n 个数字二进制中 1 的个数](https://leetcode.cn/problems/w3tCBm/description/)
 
 ## 题目描述
 
