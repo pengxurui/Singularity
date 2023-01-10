@@ -11,36 +11,53 @@
 
 ## 题目考点
 
-- 思考 1：单调栈 X：问题寻找的是下一个最大元素，而不是下一个更大元素
+- 思考 1：单调栈
 - 思考 2：小顶堆 OK：逆序处理数据，维护最小值
 - 思考 3：动态规划 X：问题定义 f(n) 为在第 n 天买入后的最大收益，发现 f(n) 与 f(n-1) 不存在最优子结构
 
-## 题解一（单调栈 · 错误）
+## 题解一（单调栈）
+
+第一次尝试时：以为单调栈的解法是错误的：问题寻找的是下一个最大元素，而不是下一个更大元素
 
 - 输入: [7,1,5,3,6,4]
 - 输出: 5
 - 错误原因：丢失了 6 - 1 的方案
 
+如果我们在入栈的时候计算差值，确实会丢失方案。但如果我们在出栈的时候计算差值，就不会丢失方案：
+
+每当处理一个元素时，由于还不清楚应该买入还是卖出，所以先将其加入到数据容器。
+
+后来，每增加一个较小的元素，那么这个 [较小] 元素一定是比容器内所有比 [较大] 元素更好的买入时机，这些较大元素可以不再考虑。因此我们发现这个容器符合栈的逻辑，且应该是大顶的逻辑。
+
+而栈底的元素是迄今为止发现的最好的买入时机，每次元素出栈（发现更好的买入时机）时，会与栈底做差值。
+
+参考：https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/solutions/139451/c-li-yong-shao-bing-wei-hu-yi-ge-dan-diao-zhan-tu-/
+
 ```
 class Solution {
     fun maxProfit(prices: IntArray): Int {
-        // 关键逻辑：增加一个更小的值，则后续值与其做减法的利润更大
+        // 大顶
+        val stack = LinkedList<Int>()
         var result = 0
-        val stack = ArrayDeque<Int>()
+        
         for (price in prices) {
-            // 增加一个较小值，则栈顶的较大值后续不会再考虑
-            while (!stack.isEmpty() && stack.peek() >= price) {
-                stack.pop()
+            while (!stack.isEmpty() && stack.getLast() >= price) {
+                result = Math.max(result, stack.getLast() - stack.getFirst())
+                stack.pollLast()
             }
-            if (!stack.isEmpty()) {
-                result = Math.max(result, price - stack.peek())
-            }
-            stack.push(price)
+            stack.addLast(price)
         }
+        // 最后有一部分元素没有出栈机会
+        if (!stack.isEmpty()) result = Math.max(result, stack.getLast() - stack.getFirst())
         return result
     }
 }
 ```
+
+**复杂度分析：**
+
+- 时间复杂度：O(n)
+- 空间复杂度：O(n) 
 
 ## 题解二（小顶堆 / 大顶堆）
 
@@ -124,3 +141,67 @@ class Solution {
 - 时间复杂度：O(n)
 - 空间复杂度：O(1) 
 
+## 题解四（动态规划）
+
+当前是否持股和昨天是否持股有关系
+
+定义问题 dp[i][j]：[i] 表示某一天结束，[j] 表示持有或不持有的状态（j==0 不持股），返回值表示该状态的最大的利润。
+
+那么有：
+
+- dp[i][0] = max{dp[i-1][0], dp[i - 1][1] + prices[i]}
+- dp[i][1] = max{dp[i - 1[1], 0 - prices[i]}
+
+- 今天不持股：昨天不持股 or 昨天持股 + 今天卖出
+- 今日持股：昨天持股 or 昨天不持股 + 今天买入（由于题目只允许一次买卖，所以买入之前的盈亏一定是 0）
+
+- 初始状态：dp[0][0] = 0、dp[0][1] = -prices[0]
+- 终止状态：dp[n - 1][0] 最后不持有的盈利一定更高
+
+```
+class Solution {
+    fun maxProfit(prices: IntArray): Int {
+        // 动态规划
+        val dp = Array(prices.size) { IntArray(2) }.apply {
+            this[0][0] = 0
+            this[0][1] = -prices[0]
+        }
+        for (index in 1 until prices.size) {
+            dp[index][0] = Math.max(dp[index - 1][0], dp[index - 1][1] + prices[index])
+            dp[index][1] = Math.max(dp[index - 1][1], -prices[index])
+        }
+        return dp[prices.size - 1][0]
+    }
+}
+```
+
+**复杂度分析：**
+
+- 时间复杂度：O(n)
+- 空间复杂度：O(n) 
+
+## 题解五（动态规划 · 滚动数组）
+
+我们发现第 [i] 天只和第 [i-1] 天有关，所以我们没有必要存储整个 dp 数组，可以去掉 [i] 这个维度
+
+```
+class Solution {
+    fun maxProfit(prices: IntArray): Int {
+        // 动态规划 + 滚动数组
+        val dp = IntArray(2).apply {
+            this[0] = 0
+            this[1] = -prices[0]
+        }
+        for (index in 1 until prices.size) {
+            dp[0] = Math.max(dp[0], dp[1] + prices[index])
+            dp[1] = Math.max(dp[1], -prices[index])
+        }
+        return dp[0]
+    }
+}
+```
+
+**复杂度分析：**
+
+- 时间复杂度：O(n)
+- 空间复杂度：O(1) 
