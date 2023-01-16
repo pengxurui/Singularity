@@ -1,4 +1,5 @@
 ## [220. 存在重复元素 III](https://leetcode.cn/problems/contains-duplicate-iii/)
+## [剑指 Offer II 057. 值和下标之差都在给定的范围内](https://leetcode.cn/problems/7WqeDu/description/)
 
 ## 题目描述
 
@@ -108,22 +109,25 @@ class Solution {
 
 其实不会出错，因为重复的元素早在情况 1 中短路跳出，所以是事实上每个桶中最多只会存储一个元素。
 
+最后，如果 t 取值为 2147483647，那么桶的大小 t + 1 就会溢出，所以有必要将桶标号设置为 Long
+
 ```
 class Solution {
     fun containsNearbyAlmostDuplicate(nums: IntArray, indexDiff: Int, valueDiff: Int): Boolean {
         // 滑动窗口 + 桶排序
         // 桶 to 元素
-        val buckets = HashMap<Int, Int>()
-        val bucketSize = valueDiff + 1
+        val buckets = HashMap<Long, Long>()
+        // 桶大小可能溢出
+        val bucketSize: Long = 1L + valueDiff
         for ((index, element) in nums.withIndex()) {
             val bucket = getBucket(element, bucketSize)
             // 检查相同桶
             if (buckets.containsKey(bucket)) return true
-            // 检查相邻桶
+            // 检查相邻桶（差值可能溢出）
             if (buckets.containsKey(bucket - 1) && nums[index] - buckets[bucket - 1]!! <= valueDiff) return true
             if (buckets.containsKey(bucket + 1) && buckets[bucket + 1]!! - nums[index] <= valueDiff) return true
             // 建立新桶
-            buckets[bucket] = nums[index]
+            buckets[bucket] = nums[index].toLong()
             // 滑动窗口
             if (index >= indexDiff) {
                 buckets.remove(getBucket(nums[index - indexDiff], bucketSize))
@@ -134,8 +138,8 @@ class Solution {
 
     // size：桶的大小
     // return：桶编号
-    private fun getBucket(num: Int, size: Int): Int {
-        return if (num >= 0) num / size else (num + 1) / size - 1
+    private fun getBucket(num: Int, size: Long): Long {
+        return if (num >= 0) 1L * num / size else 1L * (num + 1) / size - 1
     }
 }
 ```
