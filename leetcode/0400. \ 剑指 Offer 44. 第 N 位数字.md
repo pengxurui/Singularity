@@ -1,4 +1,5 @@
-## 400. 第 N 位数字](https://leetcode.cn/problems/nth-digit/description/)
+## [400. 第 N 位数字](https://leetcode.cn/problems/nth-digit/description/)
+## [剑指 Offer 44. 数字序列中某一位的数字](https://leetcode.cn/problems/shu-zi-xu-lie-zhong-mou-yi-wei-de-shu-zi-lcof/description/?favorite=xb9nqhhg)
 
 ## 题目描述
 
