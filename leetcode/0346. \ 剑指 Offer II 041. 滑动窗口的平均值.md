@@ -39,4 +39,4 @@ class MovingAverage(val size: Int) {
 **复杂度分析：**
 
 - 时间复杂度：O(1)
-- 空间复杂度：O(1) 
+- 空间复杂度：O(size) 
