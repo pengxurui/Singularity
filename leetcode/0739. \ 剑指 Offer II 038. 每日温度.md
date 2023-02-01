@@ -1,4 +1,5 @@
 ## [739. 每日温度](https://leetcode.cn/problems/daily-temperatures/)
+## [剑指 Offer II 038. 每日温度](https://leetcode.cn/problems/iIQa4I/description/?favorite=e8X3pBZi)
 
 ## 题目描述
 
