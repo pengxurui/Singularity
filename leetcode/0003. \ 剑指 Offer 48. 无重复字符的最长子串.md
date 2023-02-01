@@ -1,4 +1,5 @@
 ## [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
+## [剑指 Offer 48. 最长不含重复字符的子字符串](https://leetcode.cn/problems/zui-chang-bu-han-zhong-fu-zi-fu-de-zi-zi-fu-chuan-lcof/description/?favorite=xb9nqhhg)
 
 ## 题目描述
 
@@ -44,7 +45,7 @@ class Solution {
 - 时间复杂度：O(n)
 - 空间复杂度：O(n) 
 
-## 题解二（队列）
+## 题解二（双指针）
 
 ```
 class Solution {
@@ -70,6 +71,27 @@ class Solution {
             maxLength = Math.max(maxLength, index - left + 1)
         }
         return maxLength
+    }
+}
+```
+
+```
+class Solution {
+    fun lengthOfLongestSubstring(s: String): Int {
+        // 滑动窗口
+        var result = 0
+        var left = 0
+        val cnts = HashMap<Char, Int>()
+        for (index in s.indices) {
+            cnts[s[index]] = cnts.getOrDefault(s[index], 0) + 1
+            // 收缩左端点
+            while (cnts[s[index]]!! > 1) {
+                cnts[s[left]] = cnts[s[left]]!! - 1
+                left++
+            }
+            result = Math.max(result, index - left + 1)
+        }
+        return result
     }
 }
 ```
