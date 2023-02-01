@@ -1,4 +1,5 @@
 ## [0746. 使用最小花费爬楼梯](https://leetcode.cn/problems/min-cost-climbing-stairs/)
+## [剑指 Offer II 088. 爬楼梯的最少成本](https://leetcode.cn/problems/GzCJIP/description/?favorite=e8X3pBZi)
 
 ## 题目描述
 
@@ -14,6 +15,24 @@
 
 ## 题解
  
+```
+class Solution {
+    fun minCostClimbingStairs(cost: IntArray): Int {
+        // 子问题表示从该台阶直接登上楼顶的花费
+        // 动态规划:dp[index] = min{dp[index - 1],dp[index - 2]} + cost[index]
+        val n = cost.size
+        val dp = IntArray(n + 1) { 0 + 1 }.apply {
+            this[0] = 0
+            this[1] = cost[0]
+        }
+        for (index in 2..n) {
+            dp[index] = Math.min(dp[index - 1], dp[index - 2]) + cost[index - 1]
+        }
+        return Math.min(dp[n], dp[n - 1])
+    }
+}
+```
+
 ```
 class Solution {
     fun minCostClimbingStairs(cost: IntArray): Int {
