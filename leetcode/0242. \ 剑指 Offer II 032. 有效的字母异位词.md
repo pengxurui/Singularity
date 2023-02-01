@@ -52,6 +52,28 @@ class Solution {
 }
 ```
 
+叠加 “字符顺序不完全相同” 条件：
+
+```
+class Solution {
+    fun isAnagram(s: String, t: String): Boolean {
+        if (s.length != t.length) return false
+
+        val diffs = IntArray(26) { 0 }
+        for (index in s.indices) {
+            diffs[s[index] - 'a']++
+            diffs[t[index] - 'a']--
+        }
+
+        var diffCount = 0
+        for (diff in diffs) {
+            if (0 != diff) diffCount++
+        }
+        return 0 == diffCount && s != t
+    }
+}
+```
+
 **复杂度分析：**
 
 - 时间复杂度：O(n)
