@@ -1,0 +1,72 @@
+## [8. 字符串转换整数 atoi](https://leetcode.cn/problems/string-to-integer-atoi/description/)
+## [面试题67. 把字符串转换成整数](https://leetcode.cn/problems/ba-zi-fu-chuan-zhuan-huan-cheng-zheng-shu-lcof/description/?favorite=xb9nqhhg)
+
+## 题目描述
+
+写一个函数 StrToInt，实现把字符串转换成整数这个功能。不能使用 atoi 或者其他类似的库函数。
+
+## 题目考点
+
+字符串
+
+## 题解一（模拟）
+ 
+字符串拼接的大数越界判断：
+
+- 最小整型：-2147483648
+- 最大整型：2147483647
+
+因此，有两种越界情况：
+
+- res > boundary，则 10 * res = 2147483650 越界
+- res < boundary 且 x > 7 (正数) 或 x > 8（负数），则 10 * res + x 越界
+
+参考：https://leetcode.cn/problems/ba-zi-fu-chuan-zhuan-huan-cheng-zheng-shu-lcof/solutions/201301/mian-shi-ti-67-ba-zi-fu-chuan-zhuan-huan-cheng-z-4/
+
+```
+class Solution {
+    fun strToInt(str: String): Int {
+        val charArray = str.trim().toCharArray()
+        if (charArray.isEmpty()) return 0
+        var result = 0
+        val boundary = Integer.MAX_VALUE / 10
+        // 符号位（默认为正）
+        var sign = 1
+        for (index in charArray.indices) {
+            // 符号位
+            if (0 == index && charArray[0] == '-') {
+                sign = -1
+                continue
+            }
+            if (0 == index && charArray[0] == '+') {
+                sign = 1
+                continue
+            }
+            // 非法字符
+            if (charArray[index] !in '0'..'9') break
+            // 越界判断
+            if (result > boundary || result == boundary && charArray[index] > '7') return if (sign == 1) Integer.MAX_VALUE else Integer.MIN_VALUE
+            // 拼接
+            result = result * 10 + (charArray[index] - '0')
+        }
+        return result * sign
+    }
+}
+```
+
+**复杂度分析：**
+
+- 时间复杂度：O(n)
+- 空间复杂度：O(1) 
+
+
+## 题解二（DFA 有限状态机 · TODO）
+ 
+```
+
+```
+
+**复杂度分析：**
+
+- 时间复杂度：O(n)
+- 空间复杂度：O(1) 
