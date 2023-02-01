@@ -1,4 +1,5 @@
 ## [242. 有效的字母异位词](https://leetcode.cn/problems/valid-anagram/description/)
+## [剑指 Offer II 032. 有效的变位词](https://leetcode.cn/problems/dKk3P7/?favorite=e8X3pBZi)
 
 ## 题目描述
 
