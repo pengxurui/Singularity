@@ -1,5 +1,5 @@
 ## [897. 递增顺序搜索树](https://leetcode.cn/problems/increasing-order-search-tree/)
-## [剑指 Offer II 052. 展平二叉搜索树]([problems](https://leetcode.cn/problems/NYBBNL/?favorite=e8X3pBZi))
+## [剑指 Offer II 052. 展平二叉搜索树](https://leetcode.cn/problems/NYBBNL/description/)
 
 ## 题目描述
 
