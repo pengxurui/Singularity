@@ -1,4 +1,5 @@
 ## [236. 二叉树的最近公共祖先](https://leetcode.cn/problems/redundant-connection/)
+## [剑指 Offer 68 - II. 二叉树的最近公共祖先](https://leetcode.cn/problems/er-cha-shu-de-zui-jin-gong-gong-zu-xian-lcof/description/)
 
 ## 题目描述
 
@@ -79,6 +80,36 @@ class Solution {
         if (null == right) return left
         // 左右子树都存在解，那么当前节点就是解
         return root
+    }
+}
+```
+
+```
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ * int val;
+ * TreeNode left;
+ * TreeNode right;
+ * TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        return findNode(root, p, q);
+    }
+
+    private TreeNode findNode(TreeNode root, TreeNode p, TreeNode q) {
+        if (null == root) return null;
+        if (root == p || root == q) return root;
+        TreeNode leftResult = findNode(root.left, p, q);
+        TreeNode rightResult = findNode(root.right, p, q);
+        if (null != leftResult && null != rightResult) {
+            // 最近共同祖先
+            return root;
+        }
+        if (null != leftResult) return leftResult; else return rightResult;
     }
 }
 ```
