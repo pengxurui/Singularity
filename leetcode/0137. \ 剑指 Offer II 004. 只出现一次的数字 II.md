@@ -1,4 +1,5 @@
 ## [137. 只出现一次的数字 II](https://leetcode.cn/problems/single-number-ii/)
+## [剑指 Offer II 004. 只出现一次的数字 ](https://leetcode.cn/problems/WGki4K/description/?favorite=e8X3pBZi)
 
 ## 题目描述
 
@@ -30,6 +31,29 @@ class Solution {
             if (count % 3 != 0) {
                 result = result or (1 shl index)
             }
+        }
+        return result
+    }
+}
+```
+
+```
+class Solution {
+    fun singleNumber(nums: IntArray): Int {
+        // 按位取余
+        val cnts = IntArray(32)
+        for (element in nums) {
+            for (index in 0..31) {
+                cnts[index] += (element shr index) and 1
+            }
+        }
+        for (index in cnts.indices) {
+            cnts[index] %= 3
+        }
+        var result = 0
+        for (index in 0..31) {
+            if (0 == cnts[index]) continue
+            result = result or (1 shl index)
         }
         return result
     }
