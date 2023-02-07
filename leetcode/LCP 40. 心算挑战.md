@@ -8,6 +8,8 @@
 
 贪心、排序
 
+参考：https://leetcode.cn/problems/uOAnQW/solutions/991699/pai-xu-tan-xin-by-endlesscheng-wgk7/
+
 ## 题解
  
 ```
