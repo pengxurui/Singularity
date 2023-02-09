@@ -1,4 +1,5 @@
 ## [47. 全排列 II](https://leetcode.cn/problems/permutations-ii/description/)
+## [剑指 Offer II 084. 含有重复元素集合的全排列](https://leetcode.cn/problems/7p8L0Z/description/)
 
 ## 题目描述
 
@@ -15,24 +16,26 @@ class Solution {
     fun permuteUnique(nums: IntArray): List<List<Int>> {
         nums.sort()
         return LinkedList<List<Int>>().apply {
-            permute(nums, BooleanArray(nums.size), LinkedList<Int>(), this)
+            permuteUnique(nums, BooleanArray(nums.size) {false}, LinkedList<Int>(), this)
         }
     }
 
-    private fun permute(nums: IntArray, used: BooleanArray, path: MutableList<Int>, result: MutableList<List<Int>>) {
+    private fun permuteUnique(nums: IntArray, used: BooleanArray, path: LinkedList<Int>, result: MutableList<List<Int>>) {
         if (path.size == nums.size) {
             result.add(ArrayList(path))
             return
         }
-        for (index in 0 until used.size) {
+        for (index in nums.indices) {
+            if (used[index]) continue
             if (index > 0 && nums[index] == nums[index - 1] && !used[index - 1]) continue
-            if (!used[index]) {
-                used[index] = true
-                path.add(nums[index])
-                permute(nums, used, path, result)
-                path.removeAt(path.size - 1)
-                used[index] = false
-            }
+            // 选择
+            used[index] = true
+            path.add(nums[index])
+            // 递归
+            permuteUnique(nums, used, path, result)
+            // 回溯
+            path.removeLast()
+            used[index] = false
         }
     }
 }
