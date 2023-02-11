@@ -55,11 +55,9 @@ class Solution {
     fun maxProduct(words: Array<String>): Int {
         val masks = IntArray(words.size)
         for (index in words.indices) {
-            var mask = 0
             for (element in words[index]) {
-                mask = mask or (1 shl element - 'a')
+                masks[index] = masks[index] or (1 shl element - 'a')
             }
-            masks[index] = mask
         }
         var result = 0
         for (i in 0 until words.size) {
