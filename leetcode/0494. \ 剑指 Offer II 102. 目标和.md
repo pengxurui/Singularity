@@ -154,6 +154,8 @@ class Solution {
 
 空间优化：
 
+二维从大到小遍历避免覆盖
+
 ```
 class Solution {
     fun findTargetSumWays(nums: IntArray, target: Int): Int {
@@ -167,7 +169,7 @@ class Solution {
             this[0] = 1
         }
         for (i in 1..n) {
-            for (j in 0 .. neg) {
+            for (j in neg downTo 0) {
                 // 使用滚动数组等于已经加上这一项
                 // dp[j] += dp[j]
                 if (j >= nums[i - 1]) dp[j] += dp[j - nums[i - 1]]
