@@ -1,4 +1,5 @@
 ## [494. 目标和](https://leetcode.cn/problems/target-sum/description/)
+## [剑指 Offer II 102. 加减的目标值](https://leetcode.cn/problems/YaVDxD/)
 
 ## 题目描述
 
@@ -12,6 +13,8 @@
 ## 题目考点
 
 回溯、动态规划、背包问题
+
+参考：https://leetcode.cn/problems/target-sum/solutions/816711/gong-shui-san-xie-yi-ti-si-jie-dfs-ji-yi-et5b/
 
 ## 题解一（回溯）
 
