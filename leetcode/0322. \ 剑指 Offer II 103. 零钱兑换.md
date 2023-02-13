@@ -1,4 +1,5 @@
 ## [322. 零钱兑换](https://leetcode.cn/problems/coin-change/description/)
+## [剑指 Offer II 103. 最少的硬币数目](https://leetcode.cn/problems/gaM7Ch/?favorite=e8X3pBZi)
 
 ## 题目描述
 
