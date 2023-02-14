@@ -1,4 +1,5 @@
 ## [39. 组合总和](https://leetcode.cn/problems/combination-sum/description/)
+## [剑指 Offer II 081. 允许重复选择元素的组合](https://leetcode.cn/problems/Ygoe9J/description/?page=2)
 
 ## 题目描述
 
@@ -41,5 +42,5 @@ class Solution {
 
 **复杂度分析：**
 
-- 时间复杂度：O(n!) n 是候选数的个数
+- 时间复杂度：O(n·2^n) 一共有 2^n 个子问题，每个问题 O(n)
 - 空间复杂度：O(target) 最差情况需要递归 target 层 
