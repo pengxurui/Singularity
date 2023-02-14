@@ -82,3 +82,84 @@ class Solution {
 
 - 时间复杂度：O(Sn)
 - 空间复杂度：O(S) 
+
+## 题解三（完全背包）
+
+这道题的动态规划也可以用完全背包的实现，定义 dp[i][j] 表示以 [i] 为结尾且和为 [j] 的最少硬币数，那么：
+
+dp[i][j] = min{dp[i - 1][j], dp[i - 1][j - k*coin] + k}
+
+```
+class Solution {
+    fun coinChange(coins: IntArray, amount: Int): Int {
+        val n = coins.size
+        val dp = Array(n + 1) { IntArray(amount + 1) { Integer.MAX_VALUE } }.apply {
+            this[0][0] = 0
+        }
+        for (i in 1..n) {
+            for (j in 0..amount) {
+                dp[i][j] = dp[i - 1][j]
+                for (k in 0..j / coins[i - 1]) {
+                    if (j >= k * coins[i - 1] && dp[i - 1][j - k * coins[i - 1]] != Integer.MAX_VALUE) dp[i][j] = Math.min(dp[i][j], dp[i - 1][j - k * coins[i - 1]] + k)
+                }
+            }
+        }
+        return if (dp[n][amount] != Integer.MAX_VALUE) dp[n][amount] else -1
+    }
+}
+```
+
+一维化后：
+
+dp[j] = min{dp[j], dp[j - k*coin] + k}
+
+```
+class Solution {
+    fun coinChange(coins: IntArray, amount: Int): Int {
+        val n = coins.size
+        val dp = IntArray(amount + 1) { Integer.MAX_VALUE }.apply {
+            this[0] = 0
+        }
+        for (i in 1..n) {
+            // 从高到低
+            for (j in amount downTo 0) {
+                for (k in 0..j / coins[i - 1]) {
+                    if (j >= k * coins[i - 1] && dp[j - k * coins[i - 1]] != Integer.MAX_VALUE) dp[j] = Math.min(dp[j], dp[j - k * coins[i - 1]] + k)
+                }
+            }
+        }
+        return if (dp[amount] != Integer.MAX_VALUE) dp[amount] else -1
+    }
+}
+```
+
+换元后（将面值视为成本，数量视为价值）：
+
+另外，使用小于 Integer.MAX_VALUE 的较小数可以简化代码
+
+dp[j] = min{dp[j], dp[j - coin] + k}
+
+```
+class Solution {
+    fun coinChange(coins: IntArray, amount: Int): Int {
+        val INF = 0x3F3F3F3F
+        val n = coins.size
+        val dp = IntArray(amount + 1) { INF }.apply {
+            this[0] = 0
+        }
+        for (i in 1..n) {
+            val coin = coins[i - 1]
+            // 从低到高
+            for (j in coin .. amount) {
+                dp[j] = Math.min(dp[j], dp[j - coin] + 1)
+            }
+        }
+        return if (dp[amount] != INF) dp[amount] else -1
+    }
+}
+```
+
+**复杂度分析：**
+
+- 时间复杂度：O(Sn)
+- 空间复杂度：O(S) 
