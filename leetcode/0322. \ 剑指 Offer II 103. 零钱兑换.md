@@ -13,7 +13,8 @@
 
 回溯、动态规划
 
-参考：https://leetcode.cn/problems/coin-change/solutions/6568/dong-tai-gui-hua-tao-lu-xiang-jie-by-wei-lai-bu-ke/
+- 参考：https://leetcode.cn/problems/coin-change/solutions/6568/dong-tai-gui-hua-tao-lu-xiang-jie-by-wei-lai-bu-ke/
+- 参考：https://leetcode.cn/problems/coin-change/solutions/752323/dong-tai-gui-hua-bei-bao-wen-ti-zhan-zai-3265/
 
 ## 题解一（回溯思想 + 备忘录）
 
