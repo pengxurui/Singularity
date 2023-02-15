@@ -1,4 +1,5 @@
 ## [77. 组合](https://leetcode.cn/problems/combinations/description/)
+## [剑指 Offer II 080. 含有 k 个元素的组合](https://leetcode.cn/problems/uUsW3B/description/)
 
 ## 题目描述
 
@@ -45,6 +46,10 @@ class Solution {
 
 ## 题解二（剪枝）
 
+为了选出 k 个数，如果前一个数选择过大，那么有可能导致后序区间无法选择出 k 个数。
+
+例如 n = 100, k = 10，如果第 1 层选择 99，后面绝对无法选出 9 个数。
+
 ```
 class Solution {
     fun combine(n: Int, k: Int): List<List<Int>> {
@@ -80,14 +85,48 @@ class Solution {
 - 时间复杂度：O(C(n,k)) 不考虑构造每个组合结果字符串的 O(k) 时间
 - 空间复杂度：O(k) 最多 k 层递归栈，不考虑路径数组 O(k)
 
-## 题解三（字典序迭代）
+## 题解三（枚举二级制数）
+
+枚举二进制数，如果二进制位中 1 的个数为 k，则将数字转换为列表。
 
 如果我们将选中的位置标记位 1，未选中的位置标记为 0，则最终的这对应的二进制数正好是递增的字典序
 
 <img width="434" alt="image" src="https://user-images.githubusercontent.com/25008934/210206222-665c16eb-dc5e-4c28-b28c-c10127d0b525.png">
 
-可以看出，二进制数正好是包含 k 个 1 和 n - k 个 0 的二进制数的字典序排列，我们可以初始化一个 n 位的 Int[]，并不断求下一个字典序排列，并根据数字生成对应的组合字符串
+可以看出，二进制数正好是包含 k 个 1 和 n - k 个 0 的二进制数的字典序排列
 
+```
+class Solution {
+    fun combine(n: Int, k: Int): List<List<Int>> {
+        // 枚举二进制数
+        val result = LinkedList<List<Int>>()
+        val mask = (1 shl n) - 1
+        for (num in 0..mask) {
+            if (Integer.bitCount(num) == k) {
+                val list = LinkedList<Int>()
+                for (index in 0 until n) {
+                    if (num and (1 shl index) != 0) {
+                        list.add(index + 1)
+                    }
+                }
+                result.add(list)
+            }
+        }
+        return result
+    }
+}
+```
+
+**复杂度分析：**
+
+- 时间复杂度：O(2^n·lgn) 一共有 2^n 个状态，每个数字花费 lgn 时间检查二进制位，不考虑构造每个组合结果字符串的 O(n) 时间
+- 空间复杂度：O(1)
+
+## 题解四（下一个排列 · TODO）
+
+事实上，我们不需要枚举所有二进制数，而是不断求下一个字典序排列，直接从前一个方案变换得到下一个方案
+
+我们可以用一个长度为 n 的 0/1 数组来表示选择方案对应的二进制数，初始状态下最低的 k 位全部为 1，其余位置全部为 0，然后不断通过上述方案求 next，就可以构造出所有的方案。
 
 
 ```
@@ -95,5 +134,5 @@ class Solution {
 
 **复杂度分析：**
 
-- 时间复杂度：O(C(n,k)) 不考虑构造每个组合结果字符串的 O(k) 时间
-- 空间复杂度：O(1) 不考虑路径数组 O(k)
+- 时间复杂度：
+- 空间复杂度：
