@@ -1,0 +1,184 @@
+## [2685. 统计完全连通分量的数量](https://leetcode.cn/problems/count-the-number-of-complete-components/)
+
+## 题目描述
+
+给你一个整数 n 。现有一个包含 n 个顶点的 无向 图，顶点按从 0 到 n - 1 编号。给你一个二维整数数组 edges 其中 edges[i] = [ai, bi] 表示顶点 ai 和 bi 之间存在一条 无向 边。
+
+返回图中 完全连通分量 的数量。
+
+如果在子图中任意两个顶点之间都存在路径，并且子图中没有任何一个顶点与子图外部的顶点共享边，则称其为 连通分量 。
+
+如果连通分量中每对节点之间都存在一条边，则称其为 完全连通分量 。
+
+### 预备知识 - 完全图
+
+完全图中每对不同的顶点之间都恰连有一条边相连，n 个节点的完全图有 n*(n − 1) / 2 条边。
+
+![](https://pic.leetcode.cn/1684151777-xkhomt-Untitled.png){:width=400}
+
+### 问题分析
+
+这道题是比较直接的岛屿 / 连通分量问题，我们直接跑 DFS / BFS / 并查集，计算每个连通分量的节点数和边数是否平衡。
+
+如果连通分量是完全图，那么节点数 v 和边数 e 满足 e == v * (v - 2) / 2
+
+### 题解一（DFS）
+
+枚举每个节点跑 DFS，统计相同连通分量的节点数 v 和节点数 e，由于在遍历的时候，同一条边会在两个节点上重复统计，所以判断连通分量是否为完全图的公式调整为 e == v * (v - 2)。
+
+```kotlin
+class Solution {
+    fun countCompleteComponents(n: Int, edges: Array<IntArray>): Int {
+        // 建图（邻接表）
+        val graph = Array(n) { mutableListOf<Int>() }
+        for (edge in edges) {
+            graph[edge[0]].add(edge[1])
+            graph[edge[1]].add(edge[0]) // 无向边
+        }
+        // 标记数组
+        val visit = BooleanArray(n)
+        // 枚举
+        var ret = 0
+        for (i in 0 until n) {
+            if (visit[i]) continue
+            val cnt = IntArray(2) // v, e
+            dfs(graph, visit, i, cnt)
+            if (cnt[1] == cnt[0] * (cnt[0] - 1)) ret++
+        }
+        return ret
+    }
+
+    private fun dfs(graph: Array<out List<Int>>, visit: BooleanArray, i: Int, cnt: IntArray) {
+        visit[i] = true
+        cnt[0] += 1 // 增加节点
+        cnt[1] += graph[i].size // 增加边（会统计两次）
+        for (to in graph[i]) {
+            if (!visit[to]) dfs(graph, visit, to, cnt)
+        }
+    }
+}
+```
+
+**复杂度分析：**
+
+- 时间复杂度：$O(n + m)$ 其中 n 为节点数，m 为 edges 的长度；
+- 空间复杂度：图空间 $O(m)$，标记数组空间 $O(n)$。
+
+### 题解二（BFS）
+
+附赠一份 BFS 代码：
+
+```kotlin
+class Solution {
+    fun countCompleteComponents(n: Int, edges: Array<IntArray>): Int {
+        // 建图（邻接表）
+        val graph = Array(n) { mutableListOf<Int>() }
+        for (edge in edges) {
+            graph[edge[0]].add(edge[1])
+            graph[edge[1]].add(edge[0]) // 无向边
+        }
+        // 标记数组
+        val visit = BooleanArray(n)
+        // 枚举
+        var ret = 0
+        for (i in 0 until n) {
+            if (visit[i]) continue
+            var v = 0
+            var e = 0
+            // BFS
+            var queue = LinkedList<Int>()
+            queue.offer(i)
+            visit[i] = true
+            while (!queue.isEmpty()) {
+                val temp = queue
+                queue = LinkedList<Int>()
+                for (j in temp) {
+                    v += 1 // 增加节点
+                    e += graph[j].size // 增加边（会统计两次）
+                    for (to in graph[j]) {
+                        if (!visit[to]) {
+                            queue.offer(to)
+                            visit[to] = true
+                        }
+                    }
+                }
+            }
+            if (e == v * (v - 1)) ret++
+        }
+        return ret
+    }
+}
+```
+
+**复杂度分析：**
+
+- 时间复杂度：$O(n + m)$ 其中 n 为节点数，m 为 edges 的长度；
+- 空间复杂度：图空间、标记数组空间和队列空间。
+
+### 题解三（并查集）
+
+附赠一份并查集代码：
+
+```kotlin
+class Solution {
+
+    fun countCompleteComponents(n: Int, edges: Array<IntArray>): Int {
+        val uf = UnionFind(n)
+        for (edge in edges) {
+            uf.union(edge[0], edge[1])
+        }
+        return uf.count()
+    }
+
+    private class UnionFind(n: Int) {
+        private val parent = IntArray(n) { it }
+        private val rank = IntArray(n)
+        private val e = IntArray(n)
+        private val v = IntArray(n) { 1 }
+
+        fun find(x: Int): Int {
+            // 路径压缩
+            var a = x
+            while (parent[a] != a) {
+                parent[a] = parent[parent[a]]
+                a = parent[a]
+            }
+            return a
+        }
+
+        fun union(x: Int, y: Int) {
+            val rootX = find(x)
+            val rootY = find(y)
+            if (rootX == rootY) {
+                e[rootX]++
+            } else {
+                // 按秩合并
+                if (rank[rootX] < rank[rootY]) {
+                    parent[rootX] = rootY
+                    e[rootY] += e[rootX] + 1 // 增加边
+                    v[rootY] += v[rootX] // 增加节点
+                } else if (rank[rootY] > rank[rootX]) {
+                    parent[rootY] = rootX
+                    e[rootX] += e[rootY] + 1
+                    v[rootX] += v[rootY]
+                } else {
+                    parent[rootY] = rootX
+                    e[rootX] += e[rootY] + 1
+                    v[rootX] += v[rootY]
+                    rank[rootX]++
+                }
+            }
+        }
+
+        // 统计连通分量
+        fun count(): Int {
+            return parent.indices.count { parent[it] == it && v[it] * (v[it] - 1) / 2 == e[it] }
+        }
+    }
+}
+```
+
+**复杂度分析：**
+
+- 时间复杂度：$O(n + am)$ 其中 n 为节点数，m 为 edges 的长度，其中 $a$ 为反阿克曼函数。
+- 空间复杂度：$O(n)$ 并查集空间。
