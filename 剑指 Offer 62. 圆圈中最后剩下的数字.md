@@ -18,6 +18,10 @@
 
 那么，f(n, m) 剩下从 m%n 开始的第 x 个元素 f(n, m) = (m % n + x) % n = (m + x) % n
 
+![](https://github.com/pengxurui/LeetCode-Kotlin/assets/25008934/ee3b2243-95e1-4d5a-9d21-3ec55b82c1bc)
+
+参考：https://leetcode.cn/problems/yuan-quan-zhong-zui-hou-sheng-xia-de-shu-zi-lcof/solutions/176636/yuan-quan-zhong-zui-hou-sheng-xia-de-shu-zi-by-lee/
+
 ## 题解一（递归）
  
 ```
