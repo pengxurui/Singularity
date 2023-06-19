@@ -1,0 +1,80 @@
+## [785. 判断二分图](https://leetcode.cn/problems/is-graph-bipartite/description/)
+## [剑指 Offer II 106. 二分图](https://leetcode.cn/problems/vEAB3K/description/)
+
+## 题解（深度优先）
+
+- 二分图：每条边上的节点分别属于 A 和 B 两个集合
+- 转换为图的着色问题：遍历图使得每条边两端的阶段不同
+
+```
+class Solution {
+    fun isBipartite(graph: Array<IntArray>): Boolean {
+        val n = graph.size
+        val colour = IntArray(n) { -1 }
+        // 可能存在多个连通分量，因此需要检查每个点
+        var vaild = true
+        for (i in 0 until n) { 
+            if (colour[i] == -1) {
+                colour[i] = 0
+                if (!dfs(i, colour, graph)) return false
+            }
+        }
+        return true
+    }
+
+    private fun dfs(node:Int, colour : IntArray, graph: Array<IntArray>) : Boolean {
+        val toColor = colour[node] xor 1
+        // 枚举相邻节点
+        for (to in graph[node]!!) {
+            if (colour[to] == -1) {
+                colour[to] = toColor
+                if (!dfs (to, colour, graph)) return false
+            } else if (colour[to] != toColor){
+                return false
+            }
+        }
+        return true
+    }
+}
+```
+
+O(n + m) 每条边最多访问 1 次，每个节点最多出队 1 次
+O(n) 栈空间
+
+## 题解（广度优先）
+
+```
+class Solution {
+    fun isBipartite(graph: Array<IntArray>): Boolean {
+        val n = graph.size
+        val colour = IntArray(n) { -1 }
+        var queue = LinkedList<Int>()
+        // 可能存在多个连通分量，因此需要检查每个点
+        for (i in 0 until n) { 
+            if (colour[i] != -1) continue
+            colour[i] = 0
+            queue.offer(i)
+            while (!queue.isEmpty()) {
+                val temp = LinkedList<Int>()
+                for (node in queue) {
+                    val toColor = colour[node] xor 1
+                    // 枚举相邻节点
+                    for (to in graph[node]!!) {
+                        if (colour[to] == -1) {
+                            colour[to] = toColor
+                            temp.offer(to)
+                        } else if (colour[to] != toColor){
+                            return false
+                        }
+                    }           
+                }
+                queue = temp
+            }
+        }
+        return true
+    }
+}
+```
+
+O(n + m) 每条边最多访问 1 次，每个节点最多出队 1 次
+O(n) 队列空间
