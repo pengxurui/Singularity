@@ -1,0 +1,58 @@
+## [1008. 前序遍历构造二叉搜索树](https://leetcode.cn/problems/construct-binary-search-tree-from-preorder-traversal/description/)
+
+## 题解一（分治 + 二分查找）
+
+```
+/**
+ * Example:
+ * var ti = TreeNode(5)
+ * var v = ti.`val`
+ * Definition for a binary tree node.
+ * class TreeNode(var `val`: Int) {
+ *     var left: TreeNode? = null
+ *     var right: TreeNode? = null
+ * }
+ */
+class Solution {
+    fun bstFromPreorder(preorder: IntArray): TreeNode? {
+        return build(preorder, 0, preorder.size - 1)
+    }
+
+    private fun build(preorder: IntArray, i: Int, j: Int) : TreeNode? {
+        // 终止条件
+        if (i > j) return null
+        val pivot = preorder[i]
+        val root = TreeNode(pivot)
+        if (i == j) return root
+        // 二分查找
+        var left = i + 1
+        var right = j
+        while (left < right) {
+            val mid = (left + right + 1) ushr 1
+            if (preorder[mid] > pivot) {
+                right = mid - 1
+            } else {
+                left = mid
+            }
+        }
+        if (preorder[left] < pivot) {
+            root.left = build(preorder, i + 1, left)
+            root.right = build(preorder, left + 1, j)
+        } else {
+            root.right = build(preorder, left, j)
+        }
+        return root
+    }
+}
+```
+
+- O(nlgn)
+- O(n)
+
+## 题解二（）
+
+```
+```
+
+- O(n)
+- O(n)
