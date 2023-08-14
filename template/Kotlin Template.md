@@ -128,12 +128,10 @@ typealias longs = LongArray
 typealias pii = Pair<Int, Int>
 
 //11 Base
-
 import java.io.BufferedInputStream
 import java.io.File
 import java.io.PrintWriter
 
-const val interactive = false
 object Reader {
     private const val BS = 1 shl 16
     private const val NC = 0.toChar()
@@ -147,9 +145,6 @@ object Reader {
     val OUT: PrintWriter = PrintWriter(System.out)
     private val char: Char
         get() {
-            if (interactive) {
-                return System.`in`.read().toChar()
-            }
             while (bId == size) {
                 size = IN.read(buf) // no need for checked exceptions
                 if (size == -1) return NC
@@ -220,45 +215,19 @@ object Reader {
     }
 }
 
-fun output(aa: Any) {
-    Reader.OUT.println(aa)
-    if (interactive) {
-        Reader.flush()
-    }
-}
+fun output(aa: Any) = Reader.OUT.println(aa)
+fun done() = Reader.OUT.close()
 
-fun done() {
-    Reader.OUT.close()
-}
-
-val getIntFast: Int get() = Reader.nextInt()
-val getInt: Int
-    get() {
-        val ans = getLong; if (ans > Int.MAX_VALUE) IntArray(1000000000); return ans.toInt()
-    }
-val getLong: Long get() = Reader.nextLong()
-val getStr: String get() = Reader.nextString()
-fun getLine(n: Int): IntArray {
-    return IntArray(n) { getInt }
-}
-
-fun getLineL(n: Int): LongArray {
-    return LongArray(n) { getLong }
-}
-
-fun crash() {
-    throw Exception("Bad programme")
-}
-
-fun assert(a: Boolean) {
-    if (!a) {
-        throw Exception("Failed Assertion")
-    }
-}
-
-fun debug() {}
+fun nextString() = Reader.nextString()
+fun nextInt() = Reader.nextInt()
+fun nextLong() = Reader.nextLong()
+fun nextArrayI(n: Int) = IntArray(n) { nextInt() }
+fun nextArrayL(n: Int) = LongArray(n) { nextLong() }
+fun nextArrayS(n: Int) = Array<String>(n) { nextString() }
 
 fun main(args: Array<String>) {
+    
+    // ------------------------------------
     
     done()
 }
