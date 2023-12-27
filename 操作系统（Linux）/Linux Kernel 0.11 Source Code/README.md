@@ -1,1 +1,0 @@
-Linux Kernel 0.11: [/pub/linux/kernel/Historic/old-versions/](https://cdn.kernel.org/pub/linux/kernel/Historic/old-versions/)
