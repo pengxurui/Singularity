@@ -1,0 +1,52 @@
+#
+# Filesystem configuration
+#
+mainmenu_option next_comment
+comment 'Filesystems'
+
+bool	 'Quota support' CONFIG_QUOTA
+bool	 'Mandatory lock support' CONFIG_LOCK_MANDATORY
+tristate 'Minix fs support' CONFIG_MINIX_FS
+tristate 'Extended fs support' CONFIG_EXT_FS
+tristate 'Second extended fs support' CONFIG_EXT2_FS
+tristate 'xiafs filesystem support' CONFIG_XIA_FS
+
+# msdos filesystems
+tristate 'DOS FAT fs support' CONFIG_FAT_FS
+dep_tristate 'MSDOS fs support' CONFIG_MSDOS_FS $CONFIG_FAT_FS
+dep_tristate 'VFAT (Windows-95) fs support' CONFIG_VFAT_FS $CONFIG_FAT_FS
+dep_tristate 'umsdos: Unix like fs on top of std MSDOS FAT fs' CONFIG_UMSDOS_FS $CONFIG_MSDOS_FS
+
+bool '/proc filesystem support' CONFIG_PROC_FS
+if [ "$CONFIG_INET" = "y" ]; then
+  tristate 'NFS filesystem support' CONFIG_NFS_FS
+  if [ "$CONFIG_NFS_FS" = "y" ]; then
+    bool '   Root file system on NFS' CONFIG_ROOT_NFS
+    if [ "$CONFIG_ROOT_NFS" = "y" ]; then
+      bool '      BOOTP support' CONFIG_RNFS_BOOTP
+      bool '      RARP support' CONFIG_RNFS_RARP
+    fi
+  fi
+  tristate 'SMB filesystem support (to mount WfW shares etc..)' CONFIG_SMB_FS
+  if [ "$CONFIG_SMB_FS" != "n" -a "$CONFIG_EXPERIMENTAL" = "y" ]; then
+    bool 'SMB long filename support (EXPERIMENTAL)' CONFIG_SMB_LONG
+  fi
+fi
+if [ "$CONFIG_IPX" != "n" ]; then
+  tristate 'NCP filesystem support (to mount NetWare volumes)' CONFIG_NCP_FS
+fi
+tristate 'ISO9660 cdrom filesystem support' CONFIG_ISO9660_FS
+tristate 'OS/2 HPFS filesystem support (read only)' CONFIG_HPFS_FS
+tristate 'System V and Coherent filesystem support' CONFIG_SYSV_FS
+if [ "$CONFIG_EXPERIMENTAL" = "y" ]; then
+  tristate 'Amiga FFS filesystem support (EXPERIMENTAL)' CONFIG_AFFS_FS
+  if [ "$CONFIG_AFFS_FS" != "n" ]; then
+    define_bool CONFIG_AMIGA_PARTITION y
+  fi
+fi
+tristate 'UFS filesystem support (read only)' CONFIG_UFS_FS
+if [ "$CONFIG_UFS_FS" != "n" ]; then
+  bool 'BSD disklabel (FreeBSD partition tables) support' CONFIG_BSD_DISKLABEL
+  bool 'SMD disklabel (Sun partition tables) support' CONFIG_SMD_DISKLABEL
+fi
+endmenu

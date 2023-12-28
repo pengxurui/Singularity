@@ -1,0 +1,572 @@
+Intro
+=====
+
+This document contains a list of the latest releases of the most
+important packages for Linux as well as instructions for newcomers to
+the 1.3.x series of kernels.  By glancing through it, you should be
+able to find out what you need to upgrade in order to successfully run
+the latest kernels.
+
+   It was originally based on material from the linux-kernel mailing
+list, Jared Mauch's web page "Software Victims of the 1.3 Kernel
+Development" (http://www2.nether.net/~jared/victim.html), and Axel
+Boldt's (boldt@math.ucsb.edu) Configure.help file, among other sources,
+and was originally written and maintained by Alessandro Sigala
+(ssigala@globalnet.it).
+
+   There is now a web page based on this material, thanks to John
+Taylor.  Check out http://www.cviog.uga.edu/LinuxBleed.html if you
+prefer a HTML-ized shopping list.
+
+Last updated: June 6, 1996.
+Current Author: Chris Ricker (gt1355b@prism.gatech.edu).
+
+Current Releases
+****************
+
+- Kernel modules	 Stable: 1.3.57, Exp: 1.3.69k
+- PPP daemon		 Stable: 2.2.0f
+- Dynamic linker (ld.so) 1.7.14
+- GNU CC		 2.7.2
+- Binutils		 2.6.0.14
+- Linux C Library	 Stable:  5.2.18, Beta:  5.3.12
+- Linux C++ Library	 2.7.1.4
+- Termcap		 2.0.8
+- Procps		 0.99a
+- Gpm			 1.09
+- SysVinit		 2.62
+- Util-linux		 2.5
+
+Upgrade notes
+*************
+
+Network errors with recent kernels
+==================================
+
+   Many default network scripts are set up to add a route to the
+localhost at 127.0.0.1 at startup.  However, they do this incorrectly.
+To fix the error, which is now spotted by the kernel (causing many
+daemons to quit working), look for a line like `route add -net
+127.0.0.1' in your network configuration files and change it to `route
+add -net 127.0.0.0'.
+
+   This error is present in all Red Hat distributions (and derivative
+distributions like Caldera).  If you're running one of these, edit
+/etc/sysconfig/network-scripts/ifup-lo, changing the line `route add
+-net $(IPADDR)' to `route add -net 127.0.0.0' and you should be fine.
+
+Booting Changes
+===============
+
+   The boot stuff in 1.3.x (for arch/i386) has been enhanced so that it
+now can load bigger kernels (bzImage) and that the loaders now can load
+an initial ramdisk (initrd). For initrd see Documentation/initrd.txt.
+For building bigger kernels use one of the following make targets:
+bzImage, bzlilo, bzdisk (equivalent to make targets zImage, zlilo, and
+zdisk respectively).  If you want or need to use the new features
+you'll need to upgrade your bootloaders.  Lilo can be found at
+ftp://lrcftp.epfl.ch/pub/linux/local/lilo/lilo.19.tar.gz.  LOADLIN is at
+ftp://sunsite.unc.edu/pub/Linux/system/Linux-boot/lodlin16.tgz.  If
+you're using more unusual loaders like SysLinux or etherboot, the
+latest versions are 1.3 and 2.0, respectively.
+
+The Linux C Library
+===================
+
+   The latest stable Linux C Library release is 5.2.18.  If you upgrade
+to this from 5.0.9 or earlier, be sure to read the
+`release.libc-5.2.18' file, since GNU make and a few other fairly
+important utils can be broken by the upgrade.
+
+   The current (beta) Linux C Library release is 5.3.12. In this
+release there are some important changes that may cause troubles to
+buggy programs (programs that call free() on a pointer not returned by
+malloc() work with previous libc, but not with this release) so read the
+`release.libc-5.3.9' file carefully!  In the latest libc releases a
+dirent bug, which erroneously defined d->reclen to d->namlen if USE_GNU
+was defined, has been fixed.  Unfortunately, some GNU packages depend
+on this bug.  GNU make 3.xx is one of them.  To fix that you need to
+patch and recompile those programs (a patch for make is included in the
+file `release.libc-.5.3.9', and the address to obtain a precompiled
+binary is at the end of this file).
+
+   Also, the libc-5.3.x line has a known security hole relating to
+rlogin.  Libc-5.3.12 fixes this, so if you're going to run an
+experimental libc, be sure to upgrade to 5.3.12.
+
+   If you're getting an error message that is something to the effect of
+
+   `fcntl_setlk() called by process 123 with broken flock() emulation'
+
+   then you need to upgrade to libc-5.2.18 as well.  A proper (in other
+words, BSD-style ;-) flock system call was added in 1.3.x, and older
+libc's will now give this error.  It doesn't *really* matter, so you
+can just ignore it.  If it really annoys you, upgrade libc (and
+recompile any static binaries you might have that are linked against
+the old libc).  If you're feeling lazy, just comment out
+
+   `                printk(KERN_WARNING
+"fcntl_setlk() called by process %d with broken flock()
+  emulation\n",                        current->pid);'
+
+   in linux/fs/locks.c and recompile.  If you're still running a.out,
+there's an unofficial libc-4.7.6 release out to which you can upgrade
+to fix this problem.
+
+The Termcap Library
+===================
+
+   The current Termcap release is 2.0.8. If you upgrade to this release
+read the `README' file contained into the package to get some important
+information about the `tgetent' function changes!
+
+Procps utilities
+================
+
+   In the latest 1.3.x kernel releases the /proc file system structure
+was changed, so you need to upgrade the procps package to version
+0.99a.  In the very latest kernels, /proc has changed again.  There's
+not yet an officially updated version of procps, so use 0.99a; you
+might want to look for one of the patches floating around to update
+0.99a for use with 1.3.94 and later kernels.
+
+Kernel Modules
+==============
+
+   1.3.x is almost completely modularized, and kerneld is now
+incorporated into the kernel.  To take advantage of this, you'll need
+the latest version of the module support apps.  The latest non-beta is
+modules-1.3.57.tar.gz, and the latest beta is modules-1.3.69k.tar.gz.
+These should be available at the same place you picked up your kernel
+(ftp://ftp.funet.fi/pub/Linux/kernel/src/) and the home page is
+http://www.pi.se/blox/modules/index.html.  Note:  If you try to load a
+module and get a message like
+
+   `gcc2_compiled, undefined Failed to load module!  The symbols from
+kernel 1.3.foo don't match 1.3.foo'
+
+   where `foo' is a number for a recent kernel, then it's time to
+upgrade module utilities from 1.3.57 to the latest beta 1.3.69; you'll
+only get this error if you're running the latest binutils, so most
+people don't need to upgrade past 1.3.57.
+
+   Another little tip: you can't have both a.out *and* ELF support
+compiled as modules.  Otherwise, you get a nice Catch-22 when you try
+to run insmod to install a.out/ELF support so you can run insmod ;-).
+If you have an all-ELF system, but need a.out for the occasional legacy
+app, then you can do a.out support as a module.  Otherwise, you should
+probably leave it in the kernel, and if you haven't gone ELF yet, you
+can probably say no to ELF support.  Similarly, any partitions that you
+have to mount at startup have to have their necessary file system and
+device drivers compiled into the kernel, so don't get grandiose ideas
+about going completely modular and then forget to compile ext2fs
+support and ide drive support into your kernel ;-).
+
+PPP driver
+==========
+
+   You need to be running a pppd from ppp-2.2.0.tar.gz or greater.  The
+latest stable release is 2.2.0f and is available at
+ftp://sunsite.unc.edu/pub/Linux/system/Network/serial/ppp/ppp-2.2.0f.tar.gz.
+
+Named pipes (SysVinit)
+======================
+
+   Linux's handling of named pipes changed (it now does it The Right Way
+instead of the SunOS way ;-).  This broke some programs that depended
+on the SunOS behavior, most notably SysVinit.  If you're running 2.59
+or earlier, you will probably get a weird error on shutdown in which
+your computer shuts down fine but "INIT: error reading initrequest" or
+words to that effect scroll across your screen hundreds of times.  To
+fix, upgrade to
+ftp://ftp.cistron.nl/pub/people/miquels/debian/sysvinit-2.62.tar.gz.
+
+   If you're trying to run NCSA httpd, you have to set pre-spawning of
+daemons to zero, as it incorrectly assumes SunOS behavior.  I recommend
+you just switch to Apache httpd.
+
+   The new named pipe behavior also causes problems with Hylafax.  If
+you're running the hylafax daemon, it will just keep eating up CPU time
+until you have no idle time free.  To fix this, edit port.h included
+with the Hylafax distribution and change the line
+
+   CONFIG_OPENFIFO="O_RDONLY"
+
+   to
+
+   CONFIG_OPENFIFO="O_RDWR"
+
+   A similar method (finding all named pipes opened read-only and
+changing them to read-write) will fix any program that is broken
+because of this change.
+
+File Locking (Sendmail)
+=======================
+
+   As of pre2.0.6 (aka 1.99.6), mixed-style file locking is no longer
+allowed.  For example, a file cannot be simultaneously locked with
+`flock' and `fcntl'.  See Documentation/locks.txt for all the gory
+details.  Among the programs this has impacted are older sendmails.  If
+you get a message that sendmail cannot lock aliases.dir (or other
+files), you'll need to upgrade to at least 8.7.x. The latest sendmail
+is at ftp://ftp.cs.berkeley.edu/ucb/src/sendmail/sendmail.8.7.5.tar.gz.
+
+Uugetty
+=======
+
+   Older uugettys will not allow use of a bidirectional serial line.  To
+fix this problem, upgrade to
+ftp://sunsite.unc.edu/pub/Linux/system/Serial/getty_ps-2.0.7h.tar.gz.
+
+Kbd
+===
+
+   For those of you needing non-ASCII character/font support, you should
+upgrade to ftp.funet.fi:/pub/OS/Linux/PEOPLE/Linus/kbd-0.91.tar.gz.
+
+Console
+=======
+
+   The Linux console type has changed.  If your setup is old enough
+that you have problems, you'll need to update your termcap.  To fix,
+add linux to one of the types in /etc/termcap or snoop around
+http://www.ccil.org/~esr/ncurses.html (reputedly the latest universal
+termcap maintainer).  You may also need to update terminfo by running
+the following as root:
+
+   ln -s /usr/lib/terminfo/l/linux /usr/lib/terminfo/c/console
+
+   Better yet, just get the latest official Linux termcap from
+ftp://sunsite.unc.edu/pub/Linux/GCC/termcap-2.0.8.tar.gz
+
+   Also, the console driver is now responsible for keeping track of
+correspondence between character codes and glyph bitmaps.  If you
+encounter problems, try `loadunimap def' to get back the default
+correspondence.
+
+Hdparm
+======
+
+   Hdparm has been upgraded to take advantage of the latest features of
+the kernel drivers.  The latest non-beta version can be found at
+ftp://sunsite.unc.edu/pub/Linux/kernel/patches/diskdrives/hdparm-2.7.tar.gz.
+
+IP Accounting
+=============
+
+   All IP packets coming in or going out via one of the network
+interfaces are now passing the accounting chain.  So, packets being
+forwarded are passing this chain twice.  Since pre2.0.7 (aka 1.99.7),
+accounting rules can be defined so that they will only match in one
+direction (either incoming or outgoing).
+
+   There also exists a possibility to match on device names and/or
+device addresses, so that only packets coming in/going out via that
+device (network interface) match with a rule.  You'll need to get
+ipfwadm from ftp://ftp.xos.nl/pub/linux/ipfwadm/ipfwadm-2.1.tar.gz to
+use this.
+
+IP Firewalls
+============
+
+   The IP firewall code has been changed drastically during 1.3.x.
+There are now 3 categories of firewall rules: one for incoming packets,
+one for outgoing packets, and one for packets being forwarded.  There
+also exists a possibility to match on device names and/or device
+addresses, so that only packets coming in/going out via that device
+(network interface) match with a rule.  This is especially useful to
+prevent spoofing.  You'll need to get
+ftp://ftp.xos.nl/pub/linux/ipfwadm/ipfwadm-2.1.tar.gz to use this.
+
+IP Masquerading
+===============
+
+   IP masquerading is now part of the standard kernel.  However, you
+always need to load separate modules (ip_masq_ftp.o and/or
+ip_masq_irc.o) if you are going to use FTP or IRC in combination with
+masquerading.  You'll need to get
+ftp://ftp.xos.nl/pub/linux/ipfwadm/ipfwadm-2.1.tar.gz to use this.
+
+ISDN support
+============
+
+   The new kernels support ISDN.  You'll need ISDN utils available from
+ftp://ftp.franken.de/pub/isdn4linux/isdn4k-utils-1.3.97.tar.gz to try
+this.
+
+Term is broken
+==============
+
+   Term (a comm line multiplexer similar in purpose to slirp) does not
+work with kernels later than 1.3.60.  Since the author of term is
+apparently currently on vacation, there is no fix forthcoming.  I
+suggest that those of you who rely on term learn to use slirp.
+
+Networking
+==========
+
+   Some of the /proc/net entries have changed.  You'll need to upgrade
+to the latest net-tools in
+ftp://ftp.inka.de:/pub/comp/Linux/networking/net-tools.  The last
+official release there is net-tools-1.2.0.tar.gz, and the latest
+release is net-tools-1.32-alpha.tar.gz.  If you need the upgrade, you
+probably need the latest beta release.
+
+Xntpd
+=====
+
+   Older versions of xntpd will not work with the latest kernels.
+Upgrade to xntp3.5f.tar.Z, available from
+ftp://louie.udel.edu/pub/ntp/xntp3.5f.tar.Z.
+
+Sound driver
+============
+
+   The sound driver was upgraded in the 1.3.x kernels, breaking vplay.
+To fix this problem, get a new version of the sndkit from
+ftp://ftp.best.com/pub/front/tasd/snd-util-3.5.tar.gz.  Some users
+report that various other sound utils (cdd2wav-sbpcd, for example) need
+to be recompiled before they will work with the new kernels.
+
+Tcsh
+====
+
+   If tcsh acts funny, get the source from
+ftp://anise.ee.cornell.edu/pub/tcsh and add #define SYSMALLOC in
+config_f.h before recompiling tcsh.  Binaries can be found in
+ftp://sunsite.unc.edu/pub/Linux/system/Shells/ and a corrected one will
+probably wind up there eventually.
+
+Make
+====
+
+   If make no longer works, you need to read the release notes for the
+libc you upgraded to.  The latest libc and release notes can be found at
+ftp://tsx-11.mit.edu/pub/linux/packages/GCC.  This is NOT an error due
+to the kernel, though many people have mistakenly thought it is.  When
+you upgrade to libc-5.3.9, you have to patch make to get it to work.
+All of this is documented in the release notes with libc.  Upgrading
+libc can also break xterm support.  If it does, you need to recompile
+xterm.
+
+Loop device
+===========
+
+   1.3.x kernels include loop device support which lets you mount a
+file as a file system, which can allow for all sorts of cool things
+like encrypted file systems and such.  To use it, you'll need a
+modified version of mount from
+ftp://ftp.win.tue.nl/pub/linux/util/mount-2.5X.tar.gz and preliminary
+work on encrypted file system support can be found in
+ftp.funet.fi:/pub/OS/Linux/BETA/loop/des.1.tar.gz.
+
+Multiple device
+===============
+
+   Multiple device support (allowing you to group several partitions
+into one logical device) has also been added.  Check out
+ftp://sweet-smoke.ufr-info-p7.ibp.fr/pub/Linux/md034.tar.gz to try this
+out.
+
+Arp
+===
+
+   Arp daemon support has been added.  Check out
+http://www.loran.com/~layes/arpd/index.html for more info and a copy of
+arpd.
+
+Quota
+=====
+
+   Quota support has also been added.  You need to get quotas-1.51 from
+ftp://ftp.funet.fi/pub/Linux/PEOPLE/Linus/subsystems/quota/all.tar.gz.
+This will compile just fine after you copy its mntent.h over to
+/usr/include/mntent.h.  I've uploaded this to sunsite as
+ftp://sunsite.unc.edu/pub/Linux/system/Admin/quotas-1.51-tar.gz
+
+Process Accounting
+==================
+
+   Process accounting support has also been integrated into the new
+kernels. To use this feature, you'll need to get
+ftp://iguana.hut.fi/pub/linux/Kernel/process_accounting/acct_1.3.73.tar.gz.
+
+Bdflush
+=======
+
+   Bdflush has also been integrated into the new kernels, so those of
+you using it on older systems no longer need to hunt for the patches to
+implement it once you upgrade to 1.3.x.
+
+APM support
+===========
+
+   Advanced Power Management (APM) support has been added to the kernel
+as well.  APM, which is primarily of use in laptops, provides access to
+battery status information and may help to conserve battery power.  The
+support files can be found in
+ftp://tsx-11.mit.edu/pub/linux/packages/laptops/apm/apmd-2.4.tar.gz
+
+iBCS and Dosemu
+===============
+
+   For a version of iBCS that works with 1.3.x kernels, grab
+ftp://tsx-11.mit.edu/pub/linux/BETA/ibcs2/ibcs-1.3-960404-ALPHA.tar.gz
+
+   For a version of Dosemu that works (well, at least as well as DOS
+ever works ;-), get
+ftp://tsx-11.mit.edu/pub/linux/ALPHA/dosemu/Development/dosemu-0.63.1.19.tgz.
+Be sure to follow the instructions in README.newkernels about patching
+your include files, or it will not compile.
+
+Mtools and Fdutils
+==================
+
+   The floppy ioctl numbering scheme has changed in 1.3.x.  For
+backwards compatibility, the old system was supported through 1.3.x and
+will generate a warning in 2.0.  In 2.1.x, the old scheme will
+disappear entirely.
+
+   To avoid trouble (or at least annoying messages), you'll need to
+recompile any programs which emit floppy ioctls, including mtools and
+fdutils.  For mtools, get
+ftp://sunsite.unc.edu/pub/Linux/utils/disk-management/mtools-3.0.src.tar.gz
+and for fdutils, get
+ftp://sunsite.unc.edu/pub/Linux/system/Misc/fdutils-4.3.src.tar.gz.
+
+   In the future, fdformat might disappear entirely, so get used to
+using superformat instead.
+
+How to know the version of the installed programs
+*************************************************
+
+   There are some simple methods useful to know the version of the
+installed programs and libraries.
+
+GNU CC: gcc -v and gcc --version
+PPP: pppd -h (wrong but it show the version)
+Libc: ls -l /lib/libc.so.5
+Libc++: ls -l /usr/lib/libg++.so
+Binutils: ld -v
+ldd: ldd -v and ldd -V
+termcap: ls -l /lib/libtermcap.so.*
+modules: insmod -V
+procps: ps --version
+
+Where to get the files
+**********************
+
+Binutils
+========
+
+ftp://sunsite.unc.edu/pub/Linux/GCC/binutils-2.6.0.14.bin.tar.gz
+Installation notes:
+ftp://sunsite.unc.edu/pub/Linux/GCC/release.binutils-2.6.0.14
+
+GNU CC
+======
+
+ftp://sunsite.unc.edu/pub/Linux/GCC/gcc-2.7.2.bin.tar.gz
+Installation notes:
+ftp://sunsite.unc.edu/pub/Linux/GCC/release.gcc-2.7.2
+
+Linux C Library
+===============
+
+The stable 5.2.18 release:
+ftp://sunsite.unc.edu/pub/Linux/GCC/libc-5.2.18.bin.tar.gz
+Installation notes for 5.2.18:
+ftp://sunsite.unc.edu/pub/Linux/GCC/release.libc-5.2.18
+
+The latest 5.3.12 release:
+ftp://sunsite.unc.edu/pub/Linux/GCC/libc-5.3.12.bin.tar.gz
+Installation notes for 5.3.12:
+ftp://sunsite.unc.edu/pub/Linux/GCC/release.libc-5.3.12
+
+Patched make sources:
+ftp://sunsite.unc.edu/pub/Linux/devel/make/make-3.74.patched.tar.gz
+Patched make binary:
+ftp://sunsite.unc.edu/pub/Linux/devel/make/make-3.74-direntfix-elf.tgz
+
+Linux C++ Library
+=================
+
+ftp://sunsite.unc.edu/pub/Linux/GCC/libg++-2.7.1.4.bin.tar.gz
+Installation notes:
+ftp://sunsite.unc.edu/pub/Linux/GCC/release.libg++-2.7.1.4
+
+Dynamic Linker
+==============
+
+ftp://sunsite.unc.edu/pub/Linux/GCC/ld.so-1.7.14.tar.gz
+
+Termcap Library
+===============
+
+ftp://sunsite.unc.edu/pub/Linux/GCC/termcap-2.0.8.tar.gz
+
+Modules utilities
+=================
+
+The latest public release:
+ftp://sunsite.unc.edu/pub/Linux/kernel/modules-1.3.57.tar.gz
+The latest experimental release:
+http://www.pi.se/blox/
+
+PPP Daemon and utilities
+========================
+
+The latest public release:
+ftp://sunsite.unc.edu/pub/Linux/system/Network/serial/ppp/ppp-2.2.0f.tar.gz
+
+Procps utilities
+================
+
+ftp://sunsite.unc.edu/pub/Linux/system/Status/ps/procps-0.99a.tgz
+
+Gpm mouse utilities
+===================
+
+ftp://iride.unipv.it/pub/gpm/gpm-1.09.tar.gz
+ftp://sunsite.unc.edu/pub/Linux/system/Daemons/gpm-1.09.tar.gz
+
+SysVinit utilities
+==================
+
+ftp://sunsite.unc.edu/pub/Linux/system/Daemons/init/sysvinit-2.62.tar.gz
+
+Util-linux
+==========
+
+ftp://sunsite.unc.edu/pub/Linux/system/Misc/util-linux-2.5.tar.gz
+
+Mtools
+======
+
+ftp://sunsite.unc.edu/pub/Linux/utils/disk-management/mtools-3.0.src.tar.gz
+
+Fdutils
+=======
+
+ftp://sunsite.unc.edu/pub/Linux/system/Misc/fdutils-4.3.src.tar.gz
+
+Other Info
+==========
+
+   Please remember that most of these utils are available on your
+favorite local linux mirror.  If you can, please get them from a closer
+site before checking sunsite.
+
+   Also, for those of you running Red Hat (or RPM on a different
+distribution), most of these are available in RPM format.  Check around
+your favorite Red Hat mirror site before installing the non-RPM
+version.  Remember, you might need to use the -force option to get the
+upgrade to install.
+
+Please send info about any other packages that 1.3.x "broke" or about
+any new features of 1.3.x that require extra or new packages for use to
+Chris Ricker (gt1355b@prism.gatech.edu).  I generate this from a
+modified texinfo setup, so you don't need to bother generating a diff
+against the current version before you send the additional information
+to me.
+
